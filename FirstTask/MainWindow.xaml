@@ -1,0 +1,55 @@
+﻿<Window x:Class="FirstTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FirstTask"
+        mc:Ignorable="d"
+        Title="Запись в парикхамерскую" Height="480" Width="800" WindowStartupLocation="CenterScreen">
+    <!-- Grid размещает элементы по сетке. Margin= "10" создает внутренний отступ от краев окна -->
+    <Grid Margin="10">
+        <!-- Определяет две колонки. Width="*" означает "занять все доступное пространство поровну" -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+<!-- StackPanel выстраивает дочерние элементы вертикально. Grid.Column= "0" ставит его в левую колонку -->
+        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+            <!-- Заголовок блока. FontWeight= "Bold" = жирный, FontSize=15 = размер шрифта, Margin= отступ снизу -->
+            <TextBlock Text="Выбери причёску" FontWeight="Bold" FontSize="15" Margin="0,0,0,5"/>
+            <!-- Показывает список. ItemsSource="{Binding HairStyles}" берет данные из C# -свойства -->
+            <!-- SelectedItem привязывает выбранный элемент к переменной. Mode=TwoWay позволяет синхронизировать UI - код -->
+            <ListView Height="200" ItemsSource="{Binding HairStyles}" SelectedItem="{Binding SelectedHairStyle, Mode=TwoWay}">
+                <!-- GridView превращает список в таблицу -->
+                <ListView.View>
+                    <GridView>
+                        <!-- 1-я колонка: берет свойство Name у каждого объекта HairStyle -->
+                        <GridViewColumn Header="Название" DisplayMemberBinding="{Binding Name}" Width="160"/>
+                        <!-- 2-я колонка: берет свойство Price -->
+                        <GridViewColumn Header="Цена" DisplayMemberBinding="{Binding Price}" Width="80"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <!-- Кнопка -->
+            <Button Content="Сортировать по цене" Click="Button_Click" Margin="0,5,0,0" Height="30" Cursor="Hand"/>
+            <!-- TextBlock показывает название причёски которые выбрали. FallBackValue выводится, если привязка возвращает null -->
+            <TextBlock Text="{Binding SelectedHairStyle.Name, StringFormat='Выбрано: {0}',FallbackValue='Не выбрано'}" Margin="0,10,0,0" Foreground="Gray" FontStyle="Italic"/>
+        <!-- Правая колонка. Margin="8,0,0,0" создаёт отступ слева, чтобы не сливалось с левой панелью -->
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+            <TextBlock Text="Мастер" FontWeight="Bold" FontSize="15" Margin="0,0,0,5"/>
+            <!-- ComboBox. Displaymemberpath="Name" говорит: "показывай пользователю только свойство Name объекта" -->
+            <!-- SelectionChanged="SelectedDatesChanged" срабатывает сразу после выбора мастера -->
+            <ComboBox ItemsSource="{Binding Stylists}" DisplayMemberPath="Name" Height="30" SelectedItem="{Binding SelectedStylist, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged"/>
+            <TextBlock Text="Дата" FontWeight="Bold" FontSize="15" Margin="0,10,0,5"/>
+            <!-- Calendar.  SelectedDatesChanged вызывается при клике по любой дате -->
+            <Calendar SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                      SelectedDatesChanged="Calendar_SelectedDatesChanged" Margin="0,0,0,5"/>
+            <TextBlock Text="Свободное время" FontWeight="Bold" FontSize="15" Margin="0,0,0,5"/>
+            <!-- ListBox. Привязан к списку часов -->
+            <ListBox ItemsSource="{Binding AvailableTimes}" Height="90"
+                     SelectedItem="{Binding SelectedTime, Mode=TwoWay}"/>
+            <Button Content="Записаться" Click="Button_Click_1" Height="35" Background="LightBlue" FontWeight="Bold" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
